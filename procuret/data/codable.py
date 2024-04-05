@@ -5,10 +5,12 @@ author: hugh@procuret.com
 """
 import sys
 from typing import TypeVar, Type, Any, Union, Dict, Optional, List
-from typing import Callable
+from typing import Callable, Tuple
 from enum import Enum
 from decimal import Decimal
 from procuret.data.decodable import Decodable
+import json
+from inspect import signature
 
 T = TypeVar('T', bound='Codable')
 K = TypeVar('K', bound='CodableType')
@@ -142,7 +144,29 @@ class Codable(Decodable):
 
         return {k: recurse(self.__dict__['_' + k]) for k in self.coding_map}
 
+    codable_debug_target = False
+
     @classmethod
     def decode(cls: Type[T], data: Any) -> T:
         c = cls.coding_map
-        return cls(**{k: c[k].decode(data[k]) for k in c})
+        if cls.codable_debug_target is True:
+            print('decode data: ')
+            print(json.dumps(data, indent=4))
+            print('decode keys: ')
+            print([k for k in c])
+        for k in c:
+            if (k not in data or data[k] is None) and not c[k]._optional:
+                print('Container: ')
+                print(json.dumps(data, indent=4))
+                raise RuntimeError('Key "' + k + '" yields null data, but the \
+coding definition does not specify optional. Type: ' + str(c[k]._codable_type))
+        return cls(
+            **{k: (c[k].decode(data[k]) if k in data else None) for k in c}
+        )
+
+    def __reduce__(self) -> Tuple[Type[T], Tuple[Any]]:
+
+        a = [p for p in signature(self.__init__).parameters if p != 'self']
+        b = tuple([self.__dict__['_' + p] for p in a])
+
+        return (type(self), b)
