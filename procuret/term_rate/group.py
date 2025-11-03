@@ -32,9 +32,7 @@ class TermRateGroup(Codable):
         'rates': CD(TermRate, array=True),
         'created': CD(ProcuretTime),
         'active': CD(bool),
-        'disposition': CD(Disposition, optional=True),
-        'order': CD(Order),
-        'order_by': CD(OrderBy)
+        'disposition': CD(Disposition, optional=True)
     }
 
     def __init__(
@@ -43,9 +41,7 @@ class TermRateGroup(Codable):
         rates: List[TermRate],
         created: ProcuretTime,
         active: bool,
-        disposition: Optional[Disposition],
-        order: Order,
-        order_by: OrderBy
+        disposition: Optional[Disposition]
     ) -> None:
 
         self._public_id = public_id
@@ -53,8 +49,6 @@ class TermRateGroup(Codable):
         self._created = created
         self._active = active
         self._disposition = disposition
-        self._order = order
-        self._order_by = order_by
 
         return
 
@@ -63,8 +57,6 @@ class TermRateGroup(Codable):
     created = property(lambda s: s._created)
     active = property(lambda s: s._active)
     disposition = property(lambda s: s._disposition)
-    order = property(lambda s: s._order)
-    order_by = property(lambda s: s._order_by)
 
     @classmethod
     def retrieve(

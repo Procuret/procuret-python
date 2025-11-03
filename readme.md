@@ -61,6 +61,8 @@ Use `.create_with_email()` to create a new `Session`. This is analogous to
 1. `email: str` - Your account email
 2. `plaintext_secret: str` - Your plaintext passphrase
 3. `perspective: Perspective` - an instance of `Perspective`
+4. `code: str` - A two factor authentication code. Obtain via `SecondFactorCode`
+5. `lifecycle: Lifecycle` - Defaults to `.LONG_LIVED`
 
 ###### Example Usage
 
@@ -68,7 +70,41 @@ Use `.create_with_email()` to create a new `Session`. This is analogous to
 session = Session.create_with_email(
     email='me@somedomain.com',
     plaintext_secret='excellent passphrase',
-    perspective=Perspective.SUPPLIER
+    perspective=Perspective.SUPPLIER,
+    code='123456'
+)
+```
+
+##### `.from_interactive_prompt() -> Session`
+
+Call this method to use an interactive `Session` creation procedure.
+
+### `SecondFactorCode`
+
+`SecondFactorCode` allows you to generate two-factor authentication codes for
+use in creating `Session` instances.
+
+#### Methods
+
+##### `.create_with_email(...) -> None`
+
+This method will cause a two-factor authorisation code to be sent to the
+communication method associated with your Procuret account. You can then
+use that code as the `code` parameter when creating a `Session`.
+
+###### Parameters
+
+1. `email: str` - Your account email
+2. `plaintext_secret: str` - Your plaintext passphrase
+3. `perspective: Perspective` - an instance of `Perspective`
+
+###### Example Usage
+
+```python
+SecondFactorCode.create_with_email(
+    email='someone@somewhere.com',
+    plaintext_secret='excellent passphrase',
+    perspective=Perspective.BUSINESS
 )
 ```
 
@@ -117,7 +153,8 @@ authenticate your request.
 session = Session.create_with_email(
     email=email,
     plaintext_secret=secret,
-    perspective=Perspective.SUPPLIER
+    perspective=Perspective.SUPPLIER,
+    code='12346'  # Obtained via `SecondFactorCode`
 )
 
 # Now we use the Session in an InstalmentLink.create() call, along with
@@ -146,6 +183,20 @@ the perspective of a Supplier, you will create a `Session` with the
 
 - `.SUPPLIER`
 - `.BUSINESS`
+
+### Lifecycle
+
+An enumeration of possible `Session` lifecycles - A "short lived" `Session` will
+expire after a period of disuse. A "long lived" `Session` will never expire,
+and must be manually deleted.
+
+Consider opting for a short-lived `Session` wherever practical, to reduce the
+probability of the stored credential being compromised.
+
+#### Cases
+
+- `.LONG_LIVED`
+- `.SHORT_LIVED`
 
 ### `CommunicationOption`
 

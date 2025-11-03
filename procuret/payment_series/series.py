@@ -51,7 +51,7 @@ class PaymentSeries(Codable):
         public_id: str,
         created: ProcuretTime,
         creating_agent: str,
-        payment_method: PaymentMethodHeadline,
+        payment_method: Optional[PaymentMethodHeadline],
         customer: EntityHeadline,
         supplier: EntityHeadline,
         exchange_id: str,
@@ -82,7 +82,7 @@ class PaymentSeries(Codable):
     public_id: str = property(lambda s: s._public_id)
     created: ProcuretTime = property(lambda s: s._created)
     creating_agent: int = property(lambda s: s._creating_agent)
-    payment_method: PaymentMethodHeadline = property(
+    payment_method: Optional[PaymentMethodHeadline] = property(
         lambda s: s._payment_method
     )
     customer: EntityHeadline = property(lambda s: s._customer)

@@ -11,4 +11,4 @@ class EntityIdType(Enum):
     ABN = 1
     ACN = 2
     NZBN = 3
-    NZCN = 4
+    NZIRD = 5
