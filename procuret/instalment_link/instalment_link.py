@@ -22,7 +22,7 @@ from procuret.time.time import ProcuretTime
 from procuret.ancillary.sale_nomenclature import SaleNomenclature
 from procuret.money.currency import Currency
 from procuret.money.amount import Amount
-
+from procuret.instalment_link.instalment_link_mode import InstalmentLinkMode
 
 Self = TypeVar('Self', bound='InstalmentLink')
 
@@ -46,10 +46,11 @@ class InstalmentLink(Codable):
         'invitee_email': CD(str, optional=True),
         'invitee_phone_digits': CD(str, optional=True),
         'invitee_human_id': CD(int, optional=True),
-        'invoice_identifier': CD(str),
+        'invoice_identifier': CD(str, optional=True),
         'opens': CD(InstalmentLinkOpen, array=True),
         'sale_name': CD(SaleNomenclature),
         'allow_edit': CD(bool),
+        'mode': CD(InstalmentLinkMode),
         'denomination_id': CD(int)
     }
 
@@ -62,10 +63,11 @@ class InstalmentLink(Codable):
         invitee_phone_digits: Optional[str],
         invitee_human_id: Optional[int],
         invoice_amount: Decimal,
-        invoice_identifier: str,
+        invoice_identifier: Optional[str],
         opens: List[InstalmentLinkOpen],
         sale_name: SaleNomenclature,
         allow_edit: bool,
+        mode: InstalmentLinkMode,
         denomination_id: int
     ) -> None:
 
@@ -80,6 +82,7 @@ class InstalmentLink(Codable):
         self._opens = opens
         self._sale_name = sale_name
         self._allow_edit = allow_edit
+        self._mode = mode
         self._denomination_id = denomination_id
 
         return
@@ -95,6 +98,7 @@ class InstalmentLink(Codable):
     opens = property(lambda s: s._opens)
     sale_name = property(lambda s: s._sale_name)
     allow_edit = property(lambda s: s._allow_edit)
+    mode = property(lambda s: s._mode)
     denomination_id = property(lambda s: s._denomination_id)
 
     currency = property(lambda s: Currency.assertively_with_id(
