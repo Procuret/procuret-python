@@ -1,10 +1,9 @@
 """
 Procuret API Python
-Sale Nomenclature Module
+Instalment Link Mode Module
 author: hugh@blinkybeach.com
 """
 from enum import IntEnum
-
 
 class InstalmentLinkMode(IntEnum):
 
